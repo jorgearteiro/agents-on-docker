@@ -1,0 +1,39 @@
+services:
+  agent:
+    build:
+      context: .
+    environment:
+      - MCP_SERVER_URL=http://mcp-gateway:8811/sse
+      - QUESTION=Define Entrophy
+    volumes:
+      - ./definitions:/app/definitions
+    depends_on:
+      - mcp-gateway
+    models:
+      llm:
+        endpoint_var: MODEL_RUNNER_URL
+        model_var: MODEL_RUNNER_MODEL
+
+    develop:
+      watch:
+        - action: sync+restart
+          path: .
+          target: /app
+          ignore:
+            - __pycache__/
+            - definitions/
+        - action: rebuild
+          path: ./pyproject.toml
+
+  mcp-gateway:
+    image: docker/mcp-gateway:latest
+    use_api_socket: true
+    command:
+      - --transport=sse
+      - --servers=duckduckgo
+      - --tools=search
+
+models:
+  llm:
+    model: ai/gemma3:1B-Q4_K_M
+    context_size: 8192

@@ -1,0 +1,10 @@
+[project]
+name = "strands-simple-agent"
+version = "0.1.0"
+description = "Simple Strands Agent without MCP"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "strands-agents[openai]>=1.0.0",
+    "strands-agents-tools>=0.2.0",
+]
