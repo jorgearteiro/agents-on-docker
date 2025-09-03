@@ -22,7 +22,7 @@ Learn to build, containerize, and deploy AI agents using Docker's AI platform an
 ## Quick Start
 
 ```bash
-git clone <repository>
+git clone https://github.com/thiago4go/agents-on-docker
 cd agents-on-docker
 # Follow modules/module-1-foundations/README.md
 ```
