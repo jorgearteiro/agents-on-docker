@@ -1,34 +1,21 @@
 # Workshop Examples
 
-This directory contains enhanced versions of the original agent examples, with comprehensive documentation and educational content.
+Two complete agent implementations demonstrating progression from basic to advanced capabilities.
 
-## Examples Overview
+## Examples
 
-### Basic Agent (enhanced-agent-v1)
-Enhanced version of agent-docker-v1 with:
-- Comprehensive inline documentation
-- Step-by-step README with Docker concepts
-- Troubleshooting guides
-- Educational annotations
+### 1. Basic Agent (`basic-agent/`)
+- **Purpose**: Learn Strands SDK fundamentals
+- **Features**: Local models, simple tools, hot reload
+- **Module**: Used in Module 2
 
-### Advanced Agent (enhanced-agent-v7)
-Enhanced version of agent-docker-v7 with:
-- MCP Gateway integration details
-- Docker secrets implementation
-- Security best practices
-- Advanced configuration options
+### 2. Agent with MCP (`agent-with-mcp/`)  
+- **Purpose**: External tool integration
+- **Features**: MCP Gateway, Docker secrets, production patterns
+- **Module**: Used in Module 3
 
-## Usage
+## Usage Pattern
 
-Each example includes:
-- Complete source code with educational comments
-- Docker configurations with explanations
-- Setup and running instructions
-- Troubleshooting guides
-- Extension exercises
-
-## Integration with Modules
-
-- **Module 2** uses enhanced-agent-v1 for basic agent development
-- **Module 3** uses enhanced-agent-v7 for external tool integration
-- Both examples are referenced throughout other modules
+1. Start with `basic-agent` to understand core concepts
+2. Progress to `agent-with-mcp` for real-world capabilities
+3. Each example includes complete documentation and setup instructions

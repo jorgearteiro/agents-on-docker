@@ -1,53 +1,35 @@
 # Docker AI Agents Workshop
 
-A comprehensive workshop tutorial that teaches developers how to build, containerize, and deploy AI agents using Docker's AI platform features and the Strands SDK.
+Learn to build, containerize, and deploy AI agents using Docker's AI platform and the Strands SDK.
 
-## Workshop Overview
+## What You'll Build
 
-This workshop takes attendees from basic concepts to advanced multi-agent systems, incorporating:
-- Docker Model Runner
-- MCP Gateway
-- Docker Compose Watch
-- Docker Offload
-- Strands SDK
+- **Basic Agent**: Local AI agent with Docker Model Runner
+- **Advanced Agent**: External tool integration via MCP Gateway
 
-## Workshop Structure
+## Workshop Modules (2 hours total)
 
-### Module 1: Foundations (30 min)
-- AI Agents & Docker AI Platform Overview
-- Strands SDK Introduction
-- Environment Setup
-
-### Module 2: Basic Agent Development (30 min)
-- Building First Agent
-- Docker Model Runner Integration
-- Docker Compose Watch for Development
-- Hands-on Exercise & Practice
-
-### Module 3: External Tool Integration (10 min)
-- MCP Gateway Introduction & Security
-- Building Enhanced Agent
-- Docker Secrets Management
-- Hands-on Exercise & Practice
-
+1. **Foundations** (30 min) - Setup and core concepts
+2. **Basic Agent** (45 min) - Build your first agent with local models  
+3. **External Tools** (45 min) - Add external capabilities with MCP Gateway
 
 ## Prerequisites
 
-- Docker Desktop installed and running
-- Basic familiarity with command line
-- Text editor or IDE
-- Internet connection for model downloads
+- Docker Desktop installed
+- Basic command line knowledge
+- Text editor
 
 ## Quick Start
 
-1. Clone this repository
-2. Run the setup script: `./scripts/setup.sh`
-3. Follow the module guides in order
-
-## Directory Structure
-
+```bash
+git clone <repository>
+cd agents-on-docker
+# Follow modules/module-1-foundations/README.md
 ```
-docker-ai-agents-workshop/
-├── modules/           # Workshop module content
-├── examples/          # Strands agent examples
-```
+
+## Key Technologies
+
+- **Docker Model Runner**: Local AI model execution
+- **MCP Gateway**: Secure external tool integration  
+- **Strands SDK**: AWS's open-source agent framework
+- **Docker Compose Watch**: Hot reload development

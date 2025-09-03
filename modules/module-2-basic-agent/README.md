@@ -5,7 +5,6 @@
 
 ## Learning Objectives
 
-By the end of this module, you will:
 - Build your first Strands AI agent
 - Integrate Docker Model Runner for local models
 - Use Docker Compose Watch for development
@@ -15,16 +14,18 @@ By the end of this module, you will:
 
 - `content.md` - Step-by-step agent building guide
 - `exercises/` - Hands-on agent development exercises
-- `examples/` - Enhanced agent-docker-v1 example
 
-## Key Concepts Covered
+## Example Reference
+
+This module uses `examples/basic-agent/` as the primary learning example.
+
+## Key Concepts
 
 - Strands SDK agent structure
 - Tool creation and integration
 - Model configuration and management
 - Development workflow with hot reload
-- Basic error handling and debugging
 
 ## Next Steps
 
-After completing this module, proceed to Module 3 to add external tool integration.
+After completing this module, proceed to Module 3 for external tool integration.

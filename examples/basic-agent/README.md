@@ -1,47 +1,29 @@
-# Enhanced Basic Agent (v1)
+# Basic Agent Example
 
-This is an enhanced version of the original agent-docker-v1 example, designed for educational purposes with comprehensive documentation and explanations.
+Your first Strands SDK agent with local model integration.
 
-## What You'll Learn
+## Learning Goals
 
-- Basic Strands SDK agent structure
-- Docker Model Runner integration
-- Simple tool creation and usage
-- Docker Compose configuration
-- Development workflow with hot reload
-
-## Files Overview
-
-- `agent.py` - Main agent implementation with educational comments
-- `Dockerfile` - Container configuration with explanations
-- `compose.yaml` - Docker Compose setup for local development
-- `compose.watch.yaml` - Hot reload configuration for development
-- `pyproject.toml` - Python dependencies and project configuration
-
-## Key Features
-
-- **Local Model Integration**: Uses Docker Model Runner for local AI models
-- **Simple Tools**: Includes basic search and file operation tools
-- **Hot Reload**: Docker Compose Watch for rapid development
-- **Educational Comments**: Extensive inline documentation
+- Understand Strands SDK agent structure
+- Use Docker Model Runner for local AI models
+- Implement basic tools (search, file operations)
+- Set up development workflow with hot reload
 
 ## Quick Start
 
-1. Navigate to this directory
-2. Run `docker compose up --build`
-3. Interact with the agent through the console
-4. Make changes and see them reload automatically
-
-## Architecture
-
-```
-Agent Container
-├── Strands SDK Agent
-├── Basic Tools (search, files)
-├── Docker Model Runner Client
-└── Local Model Integration
+```bash
+cd examples/basic-agent/agent-docker-v1
+docker compose up --build
 ```
 
-## Next Steps
+The agent will start and you can interact via console. Changes to `agent.py` will auto-reload.
 
-After understanding this basic example, proceed to enhanced-agent-v7 to learn about external tool integration with MCP Gateway.
+## Key Files
+
+- `agent.py` - Main agent implementation
+- `compose.yaml` - Development setup with hot reload
+- `Dockerfile` - Container configuration
+
+## What's Next
+
+After understanding this example, proceed to `../agent-with-mcp/` to learn external tool integration.

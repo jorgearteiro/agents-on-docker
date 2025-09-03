@@ -5,7 +5,6 @@
 
 ## Learning Objectives
 
-By the end of this module, you will:
 - Understand MCP Gateway security benefits
 - Integrate external tools via MCP
 - Manage secrets with Docker secrets
@@ -15,16 +14,18 @@ By the end of this module, you will:
 
 - `content.md` - MCP Gateway integration guide
 - `exercises/` - External tool integration exercises
-- `examples/` - Enhanced agent-docker-v7 example
 
-## Key Concepts Covered
+## Example Reference
+
+This module uses `examples/agent-with-mcp/` as the primary learning example.
+
+## Key Concepts
 
 - MCP Gateway architecture and security
 - Docker secrets management
 - External API integration
 - Tool authentication and authorization
-- Advanced error handling
 
 ## Next Steps
 
-After completing this module, proceed to Module 4 to explore model flexibility.
+After completing this module, you'll have built production-ready AI agents with external capabilities.

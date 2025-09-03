@@ -1,57 +1,43 @@
-# Enhanced Advanced Agent (v7)
+# Agent with MCP Example
 
-This is agent showcasing MCP Gateway integration and advanced Docker AI features.
+Advanced agent showcasing external tool integration and production patterns.
 
-## What You'll Learn
+## Learning Goals
 
-- MCP Gateway setup and security benefits
-- Docker secrets management for API keys
-- External tool integration patterns
-- Advanced agent architecture
-- Production-ready configurations
-
-## Files Overview
-
-- `agent.py` - Advanced agent with MCP integration
-- `simple_agent.py` - Simplified version for comparison
-- `Dockerfile` - Optimized container with security practices
-- `compose.yaml` - Local development with MCP Gateway
-- `compose.openai.yaml` - Cloud model overlay with secrets
-- `pyproject.toml` - Enhanced dependencies
-
-## Key Features
-
-- **MCP Gateway Integration**: Secure external tool access
-- **Docker Secrets**: Proper API key management
-- **Model Flexibility**: Automatic local/cloud model detection
-- **Enhanced Security**: Container security best practices
-- **Production Ready**: Monitoring and error handling
+- Integrate external tools via MCP Gateway
+- Manage secrets with Docker secrets
+- Understand production security patterns
+- Configure flexible model selection (local/cloud)
 
 ## Quick Start
 
-1. Navigate to this directory
-2. Set up secrets: `echo "your-api-key" | docker secret create openai_api_key -`
-3. Run with local models: `docker compose up --build`
-4. Or run with OpenAI: `docker compose -f compose.yaml -f compose.openai.yaml up --build`
-
-## Architecture
-
+### Local Models
+```bash
+cd examples/agent-with-mcp/agent-docker-v7
+docker compose up --build
 ```
-Agent Container
-├── Strands SDK Agent
-├── MCP Gateway Client
-├── Docker Model Runner Client
-├── External Tools via MCP
-└── Secrets Management
+
+### With OpenAI (requires API key)
+```bash
+echo "your-api-key" | docker secret create openai_api_key -
+docker compose -f compose.yaml -f compose.openai.yaml up --build
 ```
+
+## Key Differences from Basic Agent
+
+- **MCP Gateway**: Secure external tool access
+- **Docker Secrets**: Proper API key management  
+- **Model Flexibility**: Auto-detects local vs cloud models
+- **Production Ready**: Enhanced error handling and monitoring
+
+## Key Files
+
+- `agent.py` - Advanced agent with MCP integration
+- `compose.yaml` - Local development with MCP Gateway
+- `compose.openai.yaml` - Cloud model overlay with secrets
 
 ## Security Features
 
-- API keys stored as Docker secrets
-- MCP Gateway provides secure tool isolation
+- API keys stored as Docker secrets (never in code)
+- MCP Gateway provides tool isolation
 - Minimal container attack surface
-- Proper secret rotation support
-
-## Next Steps
-
-Use this example as a foundation for building production-ready AI agents with external tool integration.
