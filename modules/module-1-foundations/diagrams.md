@@ -141,32 +141,23 @@ graph TD
     
     M2 --> M3[Module 3: External Tools<br/>- MCP Gateway<br/>- Tool Integration<br/>- Security Best Practices]
     
-    M3 --> M4[Module 4: Model Flexibility<br/>- Local vs Cloud<br/>- Configuration Management<br/>- Performance Optimization]
-    
-    M4 --> M5[Module 5: Integration<br/>- Production Patterns<br/>- Best Practices<br/>- Next Steps]
-    
-    M5 --> END[Workshop Complete<br/>- Templates & Resources<br/>- Continued Learning<br/>- Community Support]
     
     subgraph "Hands-on Exercises"
         EX1[Environment Setup<br/>Validation]
         EX2[Build First Agent<br/>Test & Debug]
         EX3[Add MCP Tools<br/>Security Config]
-        EX4[Model Switching<br/>Performance Test]
-        EX5[Complete Integration<br/>Production Deploy]
     end
     
     M1 --> EX1
     M2 --> EX2
     M3 --> EX3
-    M4 --> EX4
-    M5 --> EX5
     
     classDef module fill:#e1f5fe
     classDef exercise fill:#f3e5f5
     classDef milestone fill:#e8f5e8
     
-    class M1,M2,M3,M4,M5 module
-    class EX1,EX2,EX3,EX4,EX5 exercise
+    class M1,M2,M3 module
+    class EX1,EX2,EX3 exercise
     class START,END milestone
 ```
 
