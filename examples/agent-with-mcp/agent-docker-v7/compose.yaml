@@ -1,0 +1,171 @@
+# Docker Compose Configuration for Advanced AI Agent with MCP Gateway
+# This configuration demonstrates production-ready patterns for AI agent deployment
+# with secure external tool integration and flexible model management
+
+services:
+  # Advanced AI Agent Service
+  # Integrates with MCP Gateway for secure external tool access
+  agent:
+    # Build configuration
+    build:
+      context: .  # Build from current directory using enhanced Dockerfile
+    
+    # Environment variables for agent configuration
+    environment:
+      # MCP Gateway connection configuration
+      # Uses Server-Sent Events (SSE) transport for real-time communication
+      - MCP_SERVER_URL=http://mcp-gateway:8811/sse
+      
+      # Question for the agent to research and answer
+      # The agent will use MCP tools to search for information about this topic
+      - QUESTION=Define Entropy
+      
+      # Optional: Additional MCP configuration
+      # - MCP_TIMEOUT=30000          # Connection timeout in milliseconds
+      # - MCP_RETRY_ATTEMPTS=3       # Number of retry attempts for failed connections
+    
+    # Volume mounts for persistent data
+    volumes:
+      # Mount local definitions directory for agent output
+      # Files created by the agent will persist between container restarts
+      - ./definitions:/app/definitions
+    
+    # Service dependencies - ensure MCP Gateway starts before agent
+    # This prevents connection errors during startup
+    depends_on:
+      - mcp-gateway
+    
+    # Docker AI Platform Integration
+    # Configures Docker Model Runner for local AI model execution
+    models:
+      llm:  # Logical name for the model service
+        # Environment variables that will be automatically set with model connection details
+        endpoint_var: MODEL_RUNNER_URL    # Will contain the model API endpoint URL
+        model_var: MODEL_RUNNER_MODEL     # Will contain the specific model identifier
+
+    # Development Configuration with Docker Compose Watch
+    # Enables hot reload and automatic rebuilds during development
+    develop:
+      watch:
+        # Sync and restart on source code changes
+        - action: sync+restart
+          path: .           # Watch current directory for changes
+          target: /app      # Sync changes to container /app directory
+          ignore:           # Exclude these paths from watching
+            - __pycache__/  # Python cache files
+            - definitions/  # Agent output files (to prevent restart loops)
+            - "*.pyc"       # Compiled Python files
+            - ".git/"       # Git repository files
+        
+        # Rebuild container when dependencies change
+        - action: rebuild
+          path: ./pyproject.toml  # Watch Python dependency file
+
+  # MCP Gateway Service
+  # Provides secure, controlled access to external tools and APIs
+  # Acts as a security boundary between your agent and external services
+  mcp-gateway:
+    # Official Docker MCP Gateway image
+    image: docker/mcp-gateway:latest
+    
+    # Enable Docker API socket access
+    # This allows MCP Gateway to interact with Docker services securely
+    # Required for advanced MCP server management and monitoring
+    use_api_socket: true
+    
+    # MCP Gateway configuration via command-line arguments
+    command:
+      # Transport Configuration
+      - --transport=sse              # Use Server-Sent Events for real-time communication
+                                     # Alternative: --transport=stdio for direct communication
+      
+      # MCP Server Configuration
+      # Servers provide the actual tool implementations
+      - --servers=duckduckgo         # Enable DuckDuckGo search server
+                                     # Additional servers can be added:
+                                     # - --servers=duckduckgo,github,slack
+      
+      # Tool Exposure Configuration
+      # Controls which tools are available to agents
+      - --tools=search               # Expose search functionality
+                                     # Additional tools can be exposed:
+                                     # - --tools=search,github_api,file_ops
+      
+      # Security and Performance Options (optional)
+      # - --rate-limit=100           # Requests per minute per client
+      # - --timeout=30               # Request timeout in seconds
+      # - --log-level=info           # Logging verbosity
+      # - --cors-origins=*           # CORS configuration for web clients
+    
+    # Optional: Environment variables for MCP Gateway
+    # environment:
+    #   - MCP_LOG_LEVEL=info         # Logging configuration
+    #   - MCP_RATE_LIMIT=100         # Rate limiting configuration
+    #   - MCP_CACHE_TTL=300          # Cache time-to-live in seconds
+    
+    # Optional: Volume mounts for MCP Gateway configuration
+    # volumes:
+    #   - ./mcp-config:/etc/mcp      # Custom MCP server configurations
+    #   - ./mcp-logs:/var/log/mcp    # Persistent logging
+    
+    # Optional: Health check configuration
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8811/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+
+# Docker AI Model Configuration
+# Defines which AI model to use and how to configure it for optimal performance
+models:
+  llm:  # Model identifier (must match the service configuration above)
+    # Model specification - Docker will automatically download and run this model
+    model: ai/gemma3:1B-Q4_K_M  # Gemma 3 1B parameter model, 4-bit quantized
+    
+    # Alternative model options for different use cases:
+    # Fast, lightweight models (good for development and testing):
+    # model: ai/gemma3:1B-Q4_K_M     # Gemma 3 1B (fastest)
+    # model: ai/qwen3:1.5B-Q4_K_M    # Qwen 3 1.5B (good balance)
+    
+    # More capable models (better quality, slower):
+    # model: ai/llama3.2:3B-Q4_K_M   # Llama 3.2 3B (more capable)
+    # model: ai/gemma3:7B-Q4_K_M     # Gemma 3 7B (high quality)
+    
+    # Context window size - how much text the model can process at once
+    context_size: 8192  # 8K tokens (approximately 6,000 words)
+    
+    # Optional: Additional model configuration
+    # gpu_layers: 0                  # Number of layers to run on GPU (0 = CPU only)
+    # threads: 4                     # Number of CPU threads to use
+    # batch_size: 512                # Batch size for processing
+
+# MCP Gateway Security Features:
+# 1. **Credential Isolation**: API keys managed centrally, not in agent code
+# 2. **Network Security**: All external calls routed through secure gateway
+# 3. **Rate Limiting**: Built-in protection against abuse and quota exhaustion
+# 4. **Tool Sandboxing**: External tools are validated and contained
+# 5. **Audit Logging**: All external tool usage is logged for security monitoring
+# 6. **Access Control**: Fine-grained permissions for different tools and APIs
+
+# Usage Examples:
+#
+# 1. Start with default configuration (local model + MCP Gateway):
+#    docker compose up --build
+#
+# 2. Development mode with hot reload:
+#    docker compose watch
+#
+# 3. View MCP Gateway logs:
+#    docker compose logs mcp-gateway
+#
+# 4. Test MCP Gateway health:
+#    curl http://localhost:8811/health
+#
+# 5. Override the research question:
+#    QUESTION="What is quantum computing?" docker compose up --build
+#
+# 6. Scale the agent service:
+#    docker compose up --scale agent=3
+#
+# 7. Stop all services:
+#    docker compose down

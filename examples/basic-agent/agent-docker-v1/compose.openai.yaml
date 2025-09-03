@@ -1,0 +1,47 @@
+# Docker Compose Overlay for OpenAI Model Integration
+# This file demonstrates how to switch from local models to cloud-based OpenAI models
+# Use this overlay with: docker compose -f compose.yaml -f compose.openai.yaml up
+
+services:
+  agent:
+    # Additional environment variables for OpenAI integration
+    environment:
+      # Specify which OpenAI model to use
+      - OPENAI_MODEL_NAME=gpt-4o-mini
+      # Alternative models you can try:
+      # - OPENAI_MODEL_NAME=gpt-4o          # More capable, higher cost
+      # - OPENAI_MODEL_NAME=gpt-3.5-turbo   # Faster, lower cost
+    
+    # Docker Secrets Integration
+    # Secrets are more secure than environment variables for sensitive data
+    secrets:
+      - openai-api-key  # Reference to the secret defined below
+
+# Docker Secrets Configuration
+# Secrets are mounted as files in the container at /run/secrets/
+secrets:
+  openai-api-key:
+    # Read API key from local file
+    # Create this file with: echo "sk-your-api-key" > secret.openai-api-key
+    file: secret.openai-api-key
+
+# Security Benefits of Docker Secrets:
+# 1. Not visible in environment variables or process lists
+# 2. Encrypted in transit and at rest in Docker Swarm
+# 3. Only accessible to services that explicitly request them
+# 4. Automatically cleaned up when container stops
+#
+# Usage Instructions:
+# 1. Create API key file:
+#    echo "sk-your-actual-openai-api-key" > secret.openai-api-key
+#
+# 2. Start with OpenAI models:
+#    docker compose -f compose.yaml -f compose.openai.yaml up --build
+#
+# 3. The entrypoint script will automatically detect the API key and switch to OpenAI
+#
+# Cost Considerations:
+# - Local models: Free after initial download, but require computational resources
+# - OpenAI models: Pay per token, but no local resource requirements
+# - gpt-4o-mini: Good balance of capability and cost
+# - Monitor usage at: https://platform.openai.com/usage

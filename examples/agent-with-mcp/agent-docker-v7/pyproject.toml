@@ -1,0 +1,165 @@
+# Python Project Configuration for Advanced AI Agent with MCP Integration
+# This configuration includes all dependencies needed for production-ready AI agents
+# with Model Context Protocol (MCP) Gateway integration
+
+[project]
+name = "strands-advanced-agent"
+version = "0.1.0"
+description = "Advanced Strands Agent with MCP Gateway Integration"
+readme = "README.md"
+requires-python = ">=3.10"
+
+# Core Dependencies
+dependencies = [
+    # Strands SDK - Core AI agent framework
+    "strands-agents[openai]>=1.0.0",    # Includes OpenAI model support
+    
+    # Strands Tools - Additional agent capabilities
+    "strands-agents-tools>=0.2.0",      # File operations, utilities, etc.
+    
+    # Model Context Protocol (MCP) Integration
+    # Enables secure external tool integration through MCP Gateway
+    "mcp>=0.1.0",                       # Core MCP client library
+    
+    # Optional: Additional MCP-related packages
+    # "mcp-client-sse>=0.1.0",          # Server-Sent Events transport (usually included)
+    # "mcp-types>=0.1.0",               # MCP type definitions (usually included)
+]
+
+# Optional Dependencies for Extended Functionality
+# Install with: pip install .[dev,monitoring,security]
+[project.optional-dependencies]
+
+# Development dependencies
+dev = [
+    "pytest>=7.0.0",                    # Testing framework
+    "pytest-asyncio>=0.21.0",           # Async testing support
+    "black>=23.0.0",                    # Code formatting
+    "isort>=5.12.0",                    # Import sorting
+    "mypy>=1.0.0",                      # Type checking
+    "pre-commit>=3.0.0",                # Git hooks for code quality
+]
+
+# Monitoring and observability
+monitoring = [
+    "prometheus-client>=0.16.0",        # Metrics collection
+    "structlog>=23.0.0",                # Structured logging
+    "opentelemetry-api>=1.15.0",        # Distributed tracing
+    "opentelemetry-sdk>=1.15.0",        # Tracing implementation
+]
+
+# Security and compliance
+security = [
+    "cryptography>=40.0.0",             # Encryption utilities
+    "pyjwt>=2.6.0",                     # JWT token handling
+    "requests-oauthlib>=1.3.0",         # OAuth authentication
+]
+
+# Performance optimization
+performance = [
+    "uvloop>=0.17.0",                   # Fast event loop (Unix only)
+    "orjson>=3.8.0",                    # Fast JSON serialization
+    "httpx>=0.24.0",                    # Async HTTP client
+]
+
+# Project metadata
+[project.urls]
+Homepage = "https://github.com/your-org/strands-advanced-agent"
+Documentation = "https://docs.your-org.com/strands-advanced-agent"
+Repository = "https://github.com/your-org/strands-advanced-agent.git"
+Issues = "https://github.com/your-org/strands-advanced-agent/issues"
+
+# Build system configuration
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# Hatch build configuration
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+include = ["agent.py"]
+
+# Tool configurations for development
+
+# Black code formatter
+[tool.black]
+line-length = 88
+target-version = ['py310', 'py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # Exclude generated files
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+# isort import sorting
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["strands", "mcp"]
+
+# MyPy type checking
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+# Pytest configuration
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+# Dependency Management Notes:
+#
+# 1. **Core Dependencies**:
+#    - strands-agents: Main AI agent framework
+#    - mcp: Model Context Protocol client for external tool integration
+#
+# 2. **Version Pinning Strategy**:
+#    - Use >= for core dependencies to allow updates
+#    - Pin exact versions in production deployments
+#    - Regularly update dependencies for security patches
+#
+# 3. **Optional Dependencies**:
+#    - Install only what you need to minimize attack surface
+#    - Use optional dependency groups for different deployment scenarios
+#
+# 4. **Security Considerations**:
+#    - Regularly audit dependencies with tools like safety or pip-audit
+#    - Keep dependencies updated for security patches
+#    - Use virtual environments to isolate dependencies
+#
+# 5. **Docker Integration**:
+#    - Dependencies are installed during Docker build process
+#    - Use Docker layer caching to speed up builds
+#    - Consider multi-stage builds for production optimization

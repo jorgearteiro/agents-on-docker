@@ -1,0 +1,63 @@
+# Docker Compose Configuration for Basic AI Agent
+# This file demonstrates Docker AI platform integration with local model execution
+
+services:
+  # Main agent service - your Python application
+  agent:
+    # Build configuration
+    build:
+      context: .  # Build from current directory using Dockerfile   
+    
+    # Docker AI Platform Integration
+    # This section configures Docker Model Runner for local AI model execution
+    models:
+      llm:  # Logical name for the model service
+        # Environment variables that will be set with model connection details
+        endpoint_var: MODEL_RUNNER_URL    # Will contain the model API endpoint
+        model_var: MODEL_RUNNER_MODEL     # Will contain the model identifier
+
+    # Development Configuration
+    # Docker Compose Watch enables hot reload during development
+    develop:
+      watch:
+        # Sync and restart on code changes
+        - action: sync+restart
+          path: .           # Watch current directory
+          target: /app      # Sync to container /app directory
+          ignore:           # Don't sync these directories
+            - __pycache__/  # Python cache files
+            - definitions/  # Agent output files
+        
+        # Rebuild container when dependencies change
+        - action: rebuild
+          path: ./pyproject.toml  # Watch dependency file
+
+# Docker AI Model Configuration
+# This section defines which AI model to use and how to configure it
+models:
+  llm:  # Model identifier (matches the service configuration above)
+    # Model specification - Docker will download and run this model locally
+    model: ai/gemma3:1B-Q4_K_M  # Gemma 3 1B parameter model, 4-bit quantized
+    # Alternative models you can try:
+    # model: ai/qwen3:1.5B-Q4_K_M     # Qwen 3 1.5B (good for general tasks)
+    # model: ai/llama3.2:3B-Q4_K_M    # Llama 3.2 3B (more capable, slower)
+    
+    # Context window size - how much text the model can process at once
+    context_size: 8192  # 8K tokens (approximately 6,000 words)
+
+# Usage Examples:
+#
+# 1. Start with default configuration:
+#    docker compose up --build
+#
+# 2. Use with hot reload for development:
+#    docker compose watch
+#
+# 3. Override the question:
+#    QUESTION="Explain quantum computing" docker compose up --build
+#
+# 4. View logs:
+#    docker compose logs agent
+#
+# 5. Stop all services:
+#    docker compose down

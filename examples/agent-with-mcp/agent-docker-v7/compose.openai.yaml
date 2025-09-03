@@ -1,0 +1,144 @@
+# Docker Compose Overlay for OpenAI Cloud Model Integration
+# This overlay demonstrates production-ready patterns for switching from local to cloud models
+# with secure credential management using Docker secrets
+#
+# Usage: docker compose -f compose.yaml -f compose.openai.yaml up --build
+
+services:
+  agent:
+    # Additional environment variables for OpenAI cloud model configuration
+    environment:
+      # OpenAI Model Selection
+      # Choose the appropriate model based on your use case and budget
+      - OPENAI_MODEL_NAME=gpt-4o-mini
+      
+      # Alternative OpenAI models you can use:
+      # Cost-effective options:
+      # - OPENAI_MODEL_NAME=gpt-4o-mini      # Best balance of cost and capability
+      # - OPENAI_MODEL_NAME=gpt-3.5-turbo    # Fastest, lowest cost
+      
+      # High-capability options:
+      # - OPENAI_MODEL_NAME=gpt-4o           # Most capable, higher cost
+      # - OPENAI_MODEL_NAME=gpt-4-turbo      # Good balance of speed and capability
+      
+      # Specialized models:
+      # - OPENAI_MODEL_NAME=gpt-4o-mini      # Optimized for reasoning tasks
+      
+      # Optional: Additional OpenAI configuration
+      # - OPENAI_TIMEOUT=60                  # Request timeout in seconds
+      # - OPENAI_MAX_RETRIES=3               # Number of retry attempts
+      # - OPENAI_TEMPERATURE=0.1             # Response creativity (0.0-2.0)
+      # - OPENAI_MAX_TOKENS=1000             # Maximum response length
+    
+    # Docker Secrets Integration
+    # Secrets provide secure credential management with several advantages over environment variables:
+    # 1. Not visible in process lists or container inspection
+    # 2. Encrypted in transit and at rest (in Docker Swarm mode)
+    # 3. Only accessible to services that explicitly request them
+    # 4. Automatically cleaned up when container stops
+    # 5. Support for secret rotation without container rebuilds
+    secrets:
+      - openai-api-key  # Reference to the secret defined below
+      
+      # Additional secrets can be added for other services:
+      # - anthropic-api-key
+      # - google-api-key
+      # - custom-service-key
+
+# Docker Secrets Configuration
+# Secrets are mounted as read-only files in the container at /run/secrets/<secret-name>
+secrets:
+  openai-api-key:
+    # File-based secret - reads API key from local file
+    # This is the simplest method for development and single-node deployments
+    file: secret.openai-api-key
+    
+    # Alternative secret sources for production:
+    
+    # External secret (for Docker Swarm or external secret management):
+    # external: true
+    # name: production-openai-api-key
+    
+    # Environment variable secret (less secure, but sometimes necessary):
+    # environment: OPENAI_API_KEY_SECRET
+
+# Security Best Practices for API Key Management:
+#
+# 1. **File Creation**:
+#    echo "sk-your-actual-openai-api-key" > secret.openai-api-key
+#    chmod 600 secret.openai-api-key  # Restrict file permissions
+#
+# 2. **File Security**:
+#    - Never commit secret files to version control
+#    - Add secret.* to .gitignore
+#    - Use restrictive file permissions (600 or 400)
+#    - Store in secure location with appropriate access controls
+#
+# 3. **API Key Validation**:
+#    - Ensure API key starts with 'sk-' for OpenAI
+#    - Verify key has appropriate permissions for your use case
+#    - Monitor usage at https://platform.openai.com/usage
+#    - Set up billing alerts to prevent unexpected charges
+#
+# 4. **Key Rotation**:
+#    - Regularly rotate API keys (monthly or quarterly)
+#    - Update secret file and restart services
+#    - Revoke old keys after successful rotation
+#
+# 5. **Production Deployment**:
+#    - Use external secret management systems (AWS Secrets Manager, HashiCorp Vault)
+#    - Implement secret rotation automation
+#    - Use Docker Swarm or Kubernetes secrets for orchestrated deployments
+#    - Enable audit logging for secret access
+
+# Cost Management and Monitoring:
+#
+# OpenAI API costs are based on token usage. Monitor and control costs by:
+#
+# 1. **Model Selection**:
+#    - gpt-4o-mini: $0.15/1M input tokens, $0.60/1M output tokens
+#    - gpt-3.5-turbo: $0.50/1M input tokens, $1.50/1M output tokens  
+#    - gpt-4o: $2.50/1M input tokens, $10.00/1M output tokens
+#
+# 2. **Usage Optimization**:
+#    - Set appropriate max_tokens limits
+#    - Use system prompts to encourage concise responses
+#    - Implement caching for repeated queries
+#    - Monitor token usage in application logs
+#
+# 3. **Billing Controls**:
+#    - Set usage limits in OpenAI dashboard
+#    - Configure billing alerts
+#    - Implement application-level rate limiting
+#    - Use separate API keys for different environments
+
+# Comparison: Local vs Cloud Models
+#
+# | Aspect | Local Models (v1) | Cloud Models (OpenAI) |
+# |--------|-------------------|------------------------|
+# | **Cost** | Free after download | Pay per token usage |
+# | **Privacy** | Complete data privacy | Data sent to OpenAI |
+# | **Performance** | Depends on hardware | Consistent high performance |
+# | **Latency** | Low (local processing) | Higher (network requests) |
+# | **Capability** | Limited by model size | State-of-the-art capabilities |
+# | **Scalability** | Limited by hardware | Virtually unlimited |
+# | **Offline** | Works offline | Requires internet |
+# | **Setup** | Complex model management | Simple API integration |
+
+# Usage Examples:
+#
+# 1. **Setup API Key**:
+#    echo "sk-your-actual-openai-api-key" > secret.openai-api-key
+#    chmod 600 secret.openai-api-key
+#
+# 2. **Start with OpenAI**:
+#    docker compose -f compose.yaml -f compose.openai.yaml up --build
+#
+# 3. **Test Different Models**:
+#    OPENAI_MODEL_NAME=gpt-4o docker compose -f compose.yaml -f compose.openai.yaml up --build
+#
+# 4. **Monitor Usage**:
+#    docker compose -f compose.yaml -f compose.openai.yaml logs agent | grep "tokens"
+#
+# 5. **Switch Back to Local**:
+#    docker compose up --build  # Uses base compose.yaml only
